@@ -11,7 +11,7 @@ type AuthContextData = {
   error: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => void;
-}
+};
 
 type AuthResponse = {
   authentication: {
@@ -20,10 +20,10 @@ type AuthResponse = {
       name: string;
       email: string;
       avatar_url: string;
-    },
+    };
     token: string;
-  }
-}
+  };
+};
 
 export const AuthContext = createContext({} as AuthContextData);
 
@@ -33,49 +33,52 @@ export function AuthProvider(props: AuxProps) {
   const [error, setError] = useState<string | null>(null);
 
   async function signIn(email: string, password: string) {
-    await api.post<AuthResponse>('/user/login', {
-      email,
-      password
-    })
-    .then((res) => {
-      const { user, token } = res.data.authentication;
+    await api
+      .post<AuthResponse>("/user/login", {
+        email,
+        password,
+      })
+      .then((res) => {
+        const { user, token } = res.data.authentication;
 
-      localStorage.setItem('@todoapp:token', token);
+        localStorage.setItem("@todoapp:token", token);
+        localStorage.setItem("@todoapp:user", JSON.stringify(user));
 
-      api.defaults.headers.common.authorization = `Bearer ${token}`;
+        api.defaults.headers.common.Authorization = `Bearer ${token}`;
 
-      setUser(user);
+        setUser(user);
 
-      router.push('/home');
-    })
-    .catch((err) => {
-      setError(err.response.data.message);
-    });
+        router.push("/home");
+      })
+      .catch((err) => {
+        setError(err.response.data.message);
+      });
   }
 
   function signOut() {
-    router.push('/');
+    router.push("/");
 
     setUser(null);
 
-    localStorage.removeItem('@todoapp:token');
+    localStorage.removeItem("@todoapp:token");
+    localStorage.removeItem("@todoapp:user");
   }
 
   useEffect(() => {
-    const token = localStorage.getItem('@todoapp:token');
+    const storagedToken = localStorage.getItem("@todoapp:token");
+    const storagedUser = localStorage.getItem("@todoapp:user");
 
-    if(token && token !== 'undefined') {
-      api.defaults.headers.common.authorization = `Bearer ${token}`;
-
-      api.get('/user').then(res => {
-        setUser(res.data.result.user);
-      });
+    if (storagedToken && storagedUser) {
+      setUser(JSON.parse(storagedUser));
+      api.defaults.headers.common.Authorization = `Bearer ${storagedToken}`;
     }
   }, []);
 
   return (
-    <AuthContext.Provider value={{ signed: Boolean(user), user, error, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ signed: Boolean(user), user, error, signIn, signOut }}
+    >
       {props.children}
     </AuthContext.Provider>
-  )
+  );
 }

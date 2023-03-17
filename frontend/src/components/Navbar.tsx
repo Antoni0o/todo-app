@@ -1,6 +1,22 @@
-import { Avatar, Box, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerOverlay, Flex, Link, List, ListIcon, useColorMode, useDisclosure } from "@chakra-ui/react";
-import { BsPencilSquare } from 'react-icons/bs'
-import { FiLogOut } from 'react-icons/fi'
+import {
+  Avatar,
+  Box,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+  Flex,
+  Heading,
+  Link,
+  List,
+  ListIcon,
+  useColorMode,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { BsPencilSquare } from "react-icons/bs";
+import { FiLogOut } from "react-icons/fi";
 import { useRef } from "react";
 
 import { User } from "../types/User";
@@ -9,76 +25,69 @@ import { ListElement } from "./ListElement";
 import { useAuth } from "../hooks/useAuth";
 
 interface INavbarProps {
-  user: User;
+  user: User | null;
 }
 
-const Navbar = ({user}: INavbarProps) => {
+const Navbar = ({ user }: INavbarProps) => {
   const { signOut } = useAuth();
+  const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const avatarRef = useRef<HTMLImageElement>(null);
 
   return (
     <Flex
-      padding='10px 20px' 
-      justifyContent='end'
-      alignItems='center'
-      gap='10px'
-      borderBottom='1px solid'
-      borderBottomColor='dark.300'
+      padding="10px 20px"
+      justifyContent="space-between"
+      alignItems="center"
+      gap="10px"
+      borderBottom="1px solid"
+      borderBottomColor={colorMode == "dark" ? "light.200" : "dark.300"}
     >
-      <ThemeSwitcher />
-      <Avatar 
-        ref={avatarRef} 
-        name={user.name} 
-        src={user.avatar_url} 
-        onClick={onOpen} 
-        cursor='pointer' 
-      />
+      <div>
+        <Heading fontSize="2.2rem">To-do&apos;s</Heading>
+      </div>
+      <Flex alignItems="center" gap="1rem">
+        <ThemeSwitcher />
+        <Avatar
+          ref={avatarRef}
+          src={user?.avatar_url}
+          onClick={onOpen}
+          cursor="pointer"
+        />
+      </Flex>
+
       <Drawer
         isOpen={isOpen}
         onClose={onClose}
         finalFocusRef={avatarRef}
-        placement='right'
+        placement="right"
       >
         <DrawerOverlay />
-        <DrawerContent
-          bg='blue.100'
-          color='light.100'
-          margin='0'
-        >
-          <DrawerCloseButton 
-            marginTop='10px'
+        <DrawerContent margin="0">
+          <DrawerCloseButton
+            marginTop="10px"
             _focus={{
-              outline: 'none'
+              outline: "none",
             }}
           />
-          <Flex
-            margin='10px 20px' 
-            justifyContent='start'
-            alignItems='center'
-          >
-            <Avatar 
-              name={user.name} 
-              src={user.avatar_url} 
-            />
-            <DrawerHeader>{user.name}</DrawerHeader> 
+          <Flex margin="10px 20px" justifyContent="start" alignItems="center">
+            <Avatar src={user?.avatar_url} />
+            <DrawerHeader>{user?.name}</DrawerHeader>
           </Flex>
 
-          <DrawerBody 
-            padding='0'
-          >
+          <DrawerBody padding="0">
             <List>
               <ListElement>
-                <ListIcon fontSize='1rem' as={BsPencilSquare}/>
+                <ListIcon fontSize="1rem" as={BsPencilSquare} />
                 Edit Profile
               </ListElement>
-              <Box 
+              <Box
                 onClick={() => {
-                  signOut()
+                  signOut();
                 }}
               >
                 <ListElement>
-                  <ListIcon fontSize='1rem' as={FiLogOut} />
+                  <ListIcon fontSize="1rem" as={FiLogOut} />
                   Logout
                 </ListElement>
               </Box>
@@ -88,6 +97,6 @@ const Navbar = ({user}: INavbarProps) => {
       </Drawer>
     </Flex>
   );
-}
+};
 
 export { Navbar };
