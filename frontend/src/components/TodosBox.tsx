@@ -1,4 +1,5 @@
-import { Box, useColorMode } from "@chakra-ui/react";
+import { Accordion, Box, useColorMode } from "@chakra-ui/react";
+import { TodoAccordion } from "./TodoAccordion";
 
 const TodosBox = () => {
   const { colorMode } = useColorMode();
@@ -10,7 +11,12 @@ const TodosBox = () => {
       borderColor={colorMode == "dark" ? "light.200" : "dark.300"}
       borderRadius="xl"
       height="26em"
-    ></Box>
+      p="2rem"
+    >
+      <Accordion allowMultiple allowToggle>
+        <TodoAccordion title="deadline" deadline="title" status="overtime" />
+      </Accordion>
+    </Box>
   );
 };
 

@@ -28,7 +28,12 @@ const HomeBody = () => {
       >
         <TodosBox />
         <Flex gap="1rem" alignItems="center">
-          <Flex width="70%" flexDir="column" alignItems="end">
+          <Flex
+            display={["none", "none", "flex", "flex"]}
+            width="70%"
+            flexDir="column"
+            alignItems="end"
+          >
             <Divider
               width="100%"
               marginTop="1rem"
@@ -48,7 +53,7 @@ const HomeBody = () => {
           <Button
             variant="outline"
             marginTop="1em"
-            width="80%"
+            width={["100%", "100%", "80%", "80%"]}
             borderColor={colorMode == "dark" ? "light.200" : "blue.100"}
             color={colorMode == "dark" ? "light.200" : "blue.100"}
             _hover={{
