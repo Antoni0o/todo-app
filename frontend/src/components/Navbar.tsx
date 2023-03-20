@@ -9,7 +9,6 @@ import {
   DrawerOverlay,
   Flex,
   Heading,
-  Link,
   List,
   ListIcon,
   useColorMode,
