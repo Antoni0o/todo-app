@@ -63,7 +63,10 @@ const Navbar = ({ user }: INavbarProps) => {
         placement="right"
       >
         <DrawerOverlay />
-        <DrawerContent margin="0">
+        <DrawerContent
+          margin="0"
+          bg={colorMode == "dark" ? "blue.100" : "light.400"}
+        >
           <DrawerCloseButton
             marginTop="10px"
             _focus={{

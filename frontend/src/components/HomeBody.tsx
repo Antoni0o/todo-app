@@ -3,10 +3,10 @@ import {
   Divider,
   Flex,
   Modal,
+  ModalOverlay,
   useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useRef } from "react";
 import { CreateTodoModalContent } from "./CreateTodoModalContent";
 import { TodosBox } from "./TodosBox";
 
@@ -49,11 +49,11 @@ const HomeBody = () => {
             variant="outline"
             marginTop="1em"
             width="80%"
-            borderColor={colorMode === "dark" ? "light.200" : "blue.100"}
-            color={colorMode === "dark" ? "light.200" : "blue.100"}
+            borderColor={colorMode == "dark" ? "light.200" : "blue.100"}
+            color={colorMode == "dark" ? "light.200" : "blue.100"}
             _hover={{
-              bg: colorMode === "dark" ? "light.200" : "blue.100",
-              color: colorMode === "dark" ? "blue.100" : "light.200",
+              bg: colorMode == "dark" ? "light.200" : "blue.100",
+              color: colorMode == "dark" ? "blue.100" : "light.200",
             }}
             onClick={onOpen}
           >
@@ -62,6 +62,7 @@ const HomeBody = () => {
         </Flex>
       </Flex>
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
         <CreateTodoModalContent />
       </Modal>
     </>

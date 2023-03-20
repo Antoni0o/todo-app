@@ -19,7 +19,15 @@ class CreateTodoService {
     });
 
     if(!user) {
-      throw new AppError("The todo creator does not exists", 400);
+      throw new AppError("The To-do creator does not exists", 400);
+    }
+
+    if(!name) {
+      throw new AppError("The To-do can't be created without a title", 400);
+    }
+
+    if(!deadline) {
+      throw new AppError("The To-do can't be created without a deadline", 400);
     }
 
     const dateDeadline = dayjs(deadline).utc(true).format();

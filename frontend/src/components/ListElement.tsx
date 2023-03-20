@@ -13,8 +13,8 @@ const ListElement = ({ children }: AuxProps) => {
       cursor="pointer"
       padding="16px 24px"
       _hover={{
-        bg: colorMode === "dark" ? "light.100" : "blue.100",
-        color: colorMode === "dark" ? "blue.100" : "light.100",
+        bg: colorMode == "dark" ? "light.100" : "blue.100",
+        color: colorMode == "dark" ? "blue.100" : "light.100",
       }}
     >
       {children}

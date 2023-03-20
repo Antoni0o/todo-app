@@ -79,7 +79,7 @@ const SignInContent = () => {
               width="80%"
               marginTop="2em"
               _focus={{
-                borderColor: colorMode === "dark" ? "light.300" : "blue.100",
+                borderColor: colorMode == "dark" ? "light.300" : "blue.100",
               }}
             />
             <Input
@@ -93,7 +93,7 @@ const SignInContent = () => {
               width="80%"
               marginTop="1em"
               _focus={{
-                borderColor: colorMode === "dark" ? "light.300" : "blue.100",
+                borderColor: colorMode == "dark" ? "light.300" : "blue.100",
               }}
             />
             <Button
@@ -102,11 +102,11 @@ const SignInContent = () => {
               variant="outline"
               marginTop="1em"
               width="80%"
-              borderColor={colorMode === "dark" ? "light.200" : "blue.100"}
-              color={colorMode === "dark" ? "light.200" : "blue.100"}
+              borderColor={colorMode == "dark" ? "light.200" : "blue.100"}
+              color={colorMode == "dark" ? "light.200" : "blue.100"}
               _hover={{
-                bg: colorMode === "dark" ? "light.200" : "blue.100",
-                color: colorMode === "dark" ? "blue.100" : "light.200",
+                bg: colorMode == "dark" ? "light.200" : "blue.100",
+                color: colorMode == "dark" ? "blue.100" : "light.200",
               }}
               rightIcon={<FaArrowRight />}
             >
