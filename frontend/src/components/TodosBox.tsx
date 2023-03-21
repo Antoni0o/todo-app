@@ -1,8 +1,17 @@
 import { Accordion, Box, useColorMode } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { api } from "../api";
 import { TodoAccordion } from "./TodoAccordion";
 
 const TodosBox = () => {
   const { colorMode } = useColorMode();
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    api.get("/todos/find").then((res) => {
+      setTodos(res.data.result.user_todos);
+    });
+  }, []);
 
   return (
     <Box
@@ -31,13 +40,31 @@ const TodosBox = () => {
         },
       }}
     >
-      <Accordion allowMultiple allowToggle>
-        <TodoAccordion
-          title="Festa de Aniversário do Antonio"
-          deadline="28/07/2023"
-          done={false}
-          overtime={true}
-        />
+      <Accordion
+        allowMultiple
+        allowToggle
+        display="flex"
+        flexDir="column"
+        gap="1rem"
+      >
+        {todos?.map((todo) => {
+          const deadline = new Date(todo["deadline"]).toLocaleDateString(
+            "pt-BR",
+            { timeZone: "UTC" }
+          );
+
+          return (
+            <TodoAccordion
+              title={todo["name"]}
+              description={todo["description"]}
+              deadline={deadline}
+              done={todo["done"]}
+              overtime={todo["out_of_time"]}
+              id={todo["id"]}
+              key={todo["created_at"]}
+            />
+          );
+        })}
       </Accordion>
     </Box>
   );

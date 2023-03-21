@@ -7,7 +7,7 @@ import {
   useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
-import { CreateTodoModalContent } from "./CreateTodoModalContent";
+import { CreateTodoModalContent } from "./TodoModals/CreateTodoModalContent";
 import { TodosBox } from "./TodosBox";
 
 const HomeBody = () => {

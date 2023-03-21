@@ -1,5 +1,7 @@
 import {
   Button,
+  FormControl,
+  FormHelperText,
   Input,
   ModalBody,
   ModalCloseButton,
@@ -7,36 +9,45 @@ import {
   ModalFooter,
   ModalHeader,
   useColorMode,
-  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { api } from "../api";
+import { AiOutlineConsoleSql } from "react-icons/ai";
+import { api } from "../../api";
 
-const CreateTodoModalContent = () => {
+type EditTodoModalProps = {
+  id: string;
+  title: string;
+  description: string;
+  deadline: string;
+};
+
+const EditTodoModalContent = ({
+  id,
+  title,
+  description,
+  deadline,
+}: EditTodoModalProps) => {
   const router = useRouter();
   const { colorMode } = useColorMode();
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
-  const [isTodoTitleInvalid, setIsTodoTitleInvalid] = useState(false);
-  const [todoTitle, setTodoTitle] = useState("");
-  const [todoDescription, setTodoDescription] = useState("");
+  const [todoTitle, setTodoTitle] = useState(title);
+  const [todoDescription, setTodoDescription] = useState(description);
   const [todoDeadline, setTodoDeadline] = useState("");
-  const [isTodoDeadlineInvalid, setIsTodoDeadlineInvalid] = useState(false);
 
   return (
     <ModalContent
       color={colorMode == "dark" ? "light.200" : "blue.100"}
       bg={colorMode == "dark" ? "blue.100" : "light.400"}
     >
-      <ModalHeader>Create To-do</ModalHeader>
+      <ModalHeader>Edit To-do</ModalHeader>
       <ModalCloseButton />
 
       <ModalBody display="flex" flexDir="column" gap="1rem">
         <Input
-          isInvalid={isTodoTitleInvalid}
           type="text"
           _focus={{
             borderColor: colorMode == "dark" ? "light.300" : "blue.100",
@@ -60,41 +71,43 @@ const CreateTodoModalContent = () => {
             setTodoDescription(value);
           }}
         />
-        <Input
-          isInvalid={isTodoDeadlineInvalid}
-          type="date"
-          _focus={{
-            borderColor: colorMode == "dark" ? "light.300" : "blue.100",
-          }}
-          sx={{
-            "::-webkit-calendar-picker-indicator": {
-              filter: colorMode == "dark" ? "invert(100%)" : "",
-            },
-          }}
-          value={todoDeadline}
-          onChange={(e) => {
-            const { value } = e.target;
-            setTodoDeadline(value);
-          }}
-        />
+        <FormControl>
+          <Input
+            type="date"
+            _focus={{
+              borderColor: colorMode == "dark" ? "light.300" : "blue.100",
+            }}
+            sx={{
+              "::-webkit-calendar-picker-indicator": {
+                filter: colorMode == "dark" ? "invert(100%)" : "",
+              },
+            }}
+            onChange={(e) => {
+              const { value } = e.target;
+              setTodoDeadline(value);
+            }}
+          />
+          <FormHelperText>Old deadline: {deadline}</FormHelperText>
+        </FormControl>
       </ModalBody>
 
       <ModalFooter gap="1rem">
         <Button
           isLoading={isLoading}
           w="100%"
-          bg="success.200"
-          color={colorMode == "dark" ? "light.200" : "blue.100"}
+          bg={colorMode == "dark" ? "blue.100" : "light.400"}
+          color="success.200"
+          border="1px solid"
+          borderColor="success.200"
           _hover={{
-            bg: "success.100",
+            bg: "success.200",
+            color: colorMode == "dark" ? "blue.100" : "light.200",
           }}
           onClick={() => {
-            setIsTodoTitleInvalid(false);
-            setIsTodoDeadlineInvalid(false);
             setIsLoading(true);
 
             api
-              .post("/todos", {
+              .put(`/todos/update/${id}`, {
                 name: todoTitle,
                 description: todoDescription,
                 deadline: todoDeadline,
@@ -105,8 +118,8 @@ const CreateTodoModalContent = () => {
                 }, 1000);
 
                 toast({
-                  title: "To-do created successfully",
-                  description: "The To-do has been created with no errors",
+                  title: "To-do updated successfully",
+                  description: "The To-do has been updated with no errors",
                   status: "success",
                   duration: 3000,
                   position: "top-right",
@@ -120,18 +133,10 @@ const CreateTodoModalContent = () => {
                   setIsLoading(false);
                 }, 1000);
 
-                if (todoTitle == "") {
-                  setIsTodoTitleInvalid(true);
-                }
-
-                if (todoDeadline == "") {
-                  setIsTodoDeadlineInvalid(true);
-                }
-
                 toast({
-                  title: "Error while creating a To-do",
+                  title: "Error while updating a To-do",
                   description:
-                    "To-do isn't created! Error: " + err.response.data.message,
+                    "To-do isn't updated! Error: " + err.response.data.message,
                   status: "error",
                   duration: 3000,
                   position: "top-right",
@@ -140,11 +145,11 @@ const CreateTodoModalContent = () => {
               });
           }}
         >
-          Create
+          Edit
         </Button>
       </ModalFooter>
     </ModalContent>
   );
 };
 
-export { CreateTodoModalContent };
+export { EditTodoModalContent };

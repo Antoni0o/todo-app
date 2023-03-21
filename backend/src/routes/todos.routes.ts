@@ -7,11 +7,13 @@ import { MarkTodoAsDoneController } from "../controllers/todo/MarkTodoAsDoneCont
 import { UpdateTodoController } from "../controllers/todo/UpdateTodoController";
 import { VerifyAllDeadlinesController } from "../controllers/todo/VerifyAllDeadlinesController";
 import { VerifyDeadlineController } from "../controllers/todo/VerifyDeadlineController";
-import { ensureAuthentication }  from "../middlewares/ensureAuthentication";
+import { ensureAuthentication }  from "../middlewares/ensureAuthenticationMiddleware";
+import { verifyDeadlinesMiddleware } from "../middlewares/verifyDeadlinesMiddleware";
 
 const todosRoutes = Router();
 
 todosRoutes.use(ensureAuthentication)
+todosRoutes.use(verifyDeadlinesMiddleware);
 
 todosRoutes.post('/', new CreateTodoController().handle);
 

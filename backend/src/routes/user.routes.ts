@@ -5,7 +5,7 @@ import { storage } from '../config/upload'
 import { AuthenticateUserController } from "../controllers/user/AuthenticateUserController";
 import { UpdateAvatarController } from "../controllers/user/UpdateAvatarController";
 import { CreateUserController } from "../controllers/user/CreateUserController";
-import { ensureAuthentication } from "../middlewares/ensureAuthentication";
+import { ensureAuthentication } from "../middlewares/ensureAuthenticationMiddleware";
 import { UpdateUserController } from "../controllers/user/UpdateUserController";
 import { DeleteUserController } from "../controllers/user/DeleteUserController";
 import { GetUserController } from "../controllers/user/GetUserController";

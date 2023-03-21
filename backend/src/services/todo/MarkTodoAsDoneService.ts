@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
-import utc from 'dayjs/plugin/utc';
+import utc from "dayjs/plugin/utc";
 
-import { AppError } from '../../errors/AppError';
-import prismaClient from '../../prisma';
+import { AppError } from "../../errors/AppError";
+import prismaClient from "../../prisma";
 
 dayjs.extend(utc);
 
@@ -14,32 +14,50 @@ class MarkTodoAsDoneService {
   async execute(id: string) {
     const todo = await prismaClient.todo.findFirst({
       where: {
-        id
-      }
+        id,
+      },
     });
 
-    if(!todo) {
+    if (!todo) {
       throw new AppError("Todo not found!", 404);
     }
 
     const dateNow = dayjs().utc(true).format();
 
-    const updatedTodo = await prismaClient.todo.update({
-      where: {
-        id
-      },
-      data: {
-        done: true,
-        updated_at: dateNow
-      }
-    });
+    if (todo.done) {
+      const updatedTodo = await prismaClient.todo.update({
+        where: {
+          id,
+        },
+        data: {
+          done: false,
+          updated_at: dateNow,
+        },
+      });
 
-    return {
-      updated_todo: {
-        updatedTodo
-      } 
-    };
+      return {
+        updated_todo: {
+          updatedTodo,
+        },
+      };
+    } else {
+      const updatedTodo = await prismaClient.todo.update({
+        where: {
+          id,
+        },
+        data: {
+          done: true,
+          updated_at: dateNow,
+        },
+      });
+
+      return {
+        updated_todo: {
+          updatedTodo,
+        },
+      };
+    }
   }
 }
 
-export { MarkTodoAsDoneService }
+export { MarkTodoAsDoneService };
