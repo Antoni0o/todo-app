@@ -4,9 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "tsc --build",
+    "build": "tsc",
     "migrate": "prisma migrate deploy",
-    "start": "node dist/app.js && npx prisma generate",
+    "start": "node ./dist/app.js && npx prisma migrate deploy",
     "dev": "ts-node-dev --exit-child src/app.ts"
   },
   "dependencies": {
