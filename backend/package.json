@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --build",
     "migrate": "prisma migrate deploy",
-    "start": "node dist/app.js",
+    "start": "node dist/app.js && npx prisma generate",
     "dev": "ts-node-dev --exit-child src/app.ts"
   },
   "dependencies": {
