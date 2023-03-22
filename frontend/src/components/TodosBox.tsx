@@ -4,16 +4,13 @@ import { useEffect, useState } from "react";
 import { api } from "../api";
 import { TodoAccordion } from "./TodoAccordion";
 
-const TodosBox = () => {
+type TodosBoxProps = {
+  data: any[];
+};
+
+const TodosBox = ({ data }: TodosBoxProps) => {
   const router = useRouter();
   const { colorMode } = useColorMode();
-  const [todos, setTodos] = useState([]);
-
-  useEffect(() => {
-    api.get("/todos/find").then((res) => {
-      setTodos(res.data.result.user_todos);
-    });
-  }, []);
 
   return (
     <>
@@ -53,7 +50,7 @@ const TodosBox = () => {
             flexDir="column"
             gap="1rem"
           >
-            {todos?.map((todo) => {
+            {data?.map((todo) => {
               const deadline = new Date(todo["deadline"]).toLocaleDateString(
                 "pt-BR",
                 { timeZone: "UTC" }
@@ -77,5 +74,15 @@ const TodosBox = () => {
     </>
   );
 };
+
+export async function getServerSideProps() {
+  let data;
+
+  api.get("/todos/find").then((res) => {
+    data = res.data.result.user_todos;
+  });
+
+  return { props: { data } };
+}
 
 export { TodosBox };
