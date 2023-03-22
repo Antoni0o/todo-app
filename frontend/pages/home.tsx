@@ -11,10 +11,6 @@ export default function HomePage() {
   const router = useRouter();
   const title = "To-do App";
 
-  if (!router.isFallback && !user?.id) {
-    return <Error statusCode={404} />;
-  }
-
   return (
     <>
       {router.isFallback ? (

@@ -71,6 +71,8 @@ export function AuthProvider(props: AuxProps) {
     if (storagedToken && storagedUser) {
       setUser(JSON.parse(storagedUser));
       api.defaults.headers.common.Authorization = `Bearer ${storagedToken}`;
+    } else {
+      router.push("/");
     }
   }, []);
 
