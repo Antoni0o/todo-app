@@ -10,7 +10,11 @@ import {
 import { CreateTodoModalContent } from "./TodoModals/CreateTodoModalContent";
 import { TodosBox } from "./TodosBox";
 
-const HomeBody = () => {
+type HomeBodyProps = {
+  todos: any[];
+};
+
+const HomeBody = ({ todos }: HomeBodyProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
 
@@ -26,7 +30,7 @@ const HomeBody = () => {
         }}
         overflow="hidden"
       >
-        <TodosBox />
+        <TodosBox todos={todos} />
         <Flex gap="1rem" alignItems="center">
           <Flex
             display={["none", "none", "flex", "flex"]}
