@@ -229,8 +229,7 @@ const TodoAccordion = ({
                 leftIcon={<MdOutlineDoneAll />}
                 fontSize={["0.8rem", "1rem"]}
                 onClick={() => {
-                  api.patch(`/todos/done/${id}`);
-                  router.reload();
+                  api.patch(`/todos/done/${id}`).then(() => router.reload());
                 }}
               >
                 Done
@@ -247,8 +246,7 @@ const TodoAccordion = ({
                 leftIcon={<MdOutlineRemoveDone />}
                 fontSize={["0.8rem", "1rem"]}
                 onClick={() => {
-                  api.patch(`/todos/done/${id}`);
-                  router.reload();
+                  api.patch(`/todos/done/${id}`).then(() => router.reload());
                 }}
               >
                 Undone
