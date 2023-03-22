@@ -76,11 +76,8 @@ const TodosBox = ({ data }: TodosBoxProps) => {
 };
 
 export async function getServerSideProps() {
-  let data;
-
-  api.get("/todos/find").then((res) => {
-    data = res.data.result.user_todos;
-  });
+  const res = await api.get("/todos/find");
+  const data = await res.data.result.user_todos;
 
   return { props: { data } };
 }
