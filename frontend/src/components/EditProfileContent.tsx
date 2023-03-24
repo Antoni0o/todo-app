@@ -62,7 +62,7 @@ const EditProfileContent = () => {
               width: "100%",
               gap: "0.4rem",
               _after: {
-                content: '"Edit Profile"',
+                content: '"Edit Avatar"',
               },
             }}
           >
