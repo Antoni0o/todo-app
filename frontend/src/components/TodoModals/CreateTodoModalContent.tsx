@@ -7,7 +7,6 @@ import {
   ModalFooter,
   ModalHeader,
   useColorMode,
-  useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -17,7 +16,6 @@ const CreateTodoModalContent = () => {
   const router = useRouter();
   const { colorMode } = useColorMode();
   const [isLoading, setIsLoading] = useState(false);
-  const toast = useToast();
 
   const [isTodoTitleInvalid, setIsTodoTitleInvalid] = useState(false);
   const [todoTitle, setTodoTitle] = useState("");
@@ -104,20 +102,10 @@ const CreateTodoModalContent = () => {
               .then(() => {
                 setTimeout(() => {
                   setIsLoading(false);
+                  router.reload();
                 }, 1000);
-
-                toast({
-                  title: "To-do created successfully",
-                  description: "The To-do has been created with no errors",
-                  status: "success",
-                  duration: 3000,
-                  position: "top-right",
-                  isClosable: true,
-                });
-
-                router.reload();
               })
-              .catch((err) => {
+              .catch(() => {
                 setTimeout(() => {
                   setIsLoading(false);
                 }, 1000);
@@ -129,16 +117,6 @@ const CreateTodoModalContent = () => {
                 if (todoDeadline == "") {
                   setIsTodoDeadlineInvalid(true);
                 }
-
-                toast({
-                  title: "Error while creating a To-do",
-                  description:
-                    "To-do isn't created! Error: " + err.response.data.message,
-                  status: "error",
-                  duration: 3000,
-                  position: "top-right",
-                  isClosable: true,
-                });
               });
           }}
         >

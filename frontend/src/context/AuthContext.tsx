@@ -51,7 +51,7 @@ export function AuthProvider(props: AuxProps) {
         router.push("/home");
       })
       .catch((err) => {
-        setError(err.response.data.message);
+        console.log(err.response);
       });
   }
 

@@ -9,11 +9,9 @@ import {
   ModalFooter,
   ModalHeader,
   useColorMode,
-  useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { AiOutlineConsoleSql } from "react-icons/ai";
 import { api } from "../../api";
 
 type EditTodoModalProps = {
@@ -32,7 +30,6 @@ const EditTodoModalContent = ({
   const router = useRouter();
   const { colorMode } = useColorMode();
   const [isLoading, setIsLoading] = useState(false);
-  const toast = useToast();
 
   const [todoTitle, setTodoTitle] = useState(title);
   const [todoDescription, setTodoDescription] = useState(description);
@@ -115,33 +112,13 @@ const EditTodoModalContent = ({
               .then(() => {
                 setTimeout(() => {
                   setIsLoading(false);
+                  router.reload();
                 }, 1000);
-
-                toast({
-                  title: "To-do updated successfully",
-                  description: "The To-do has been updated with no errors",
-                  status: "success",
-                  duration: 3000,
-                  position: "top-right",
-                  isClosable: true,
-                });
-
-                router.reload();
               })
               .catch((err) => {
                 setTimeout(() => {
                   setIsLoading(false);
                 }, 1000);
-
-                toast({
-                  title: "Error while updating a To-do",
-                  description:
-                    "To-do isn't updated! Error: " + err.response.data.message,
-                  status: "error",
-                  duration: 3000,
-                  position: "top-right",
-                  isClosable: true,
-                });
               });
           }}
         >

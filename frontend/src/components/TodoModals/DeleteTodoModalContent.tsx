@@ -7,7 +7,6 @@ import {
   ModalHeader,
   Text,
   useColorMode,
-  useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -21,7 +20,6 @@ const DeleteTodoModalContent = ({ id }: DeleteTodoModalProps) => {
   const router = useRouter();
   const { colorMode } = useColorMode();
   const [isLoading, setIsLoading] = useState(false);
-  const toast = useToast();
 
   return (
     <ModalContent
@@ -54,35 +52,12 @@ const DeleteTodoModalContent = ({ id }: DeleteTodoModalProps) => {
             color: colorMode == "dark" ? "blue.100" : "light.200",
           }}
           onClick={() => {
-            api
-              .delete(`/todos/delete/${id}`)
-              .then(() => {
-                setTimeout(() => {
-                  setIsLoading(false);
-                }, 1000);
-
-                toast({
-                  title: "To-do deleted successfully",
-                  description: "The To-do has been deleted with no errors",
-                  status: "success",
-                  duration: 3000,
-                  position: "top-right",
-                  isClosable: true,
-                });
-
+            api.delete(`/todos/delete/${id}`).then(() => {
+              setTimeout(() => {
+                setIsLoading(false);
                 router.reload();
-              })
-              .catch((err) => {
-                toast({
-                  title: "Error while deleting a To-do",
-                  description:
-                    "To-do isn't deleted! Error: " + err.response.data.message,
-                  status: "error",
-                  duration: 3000,
-                  position: "top-right",
-                  isClosable: true,
-                });
-              });
+              }, 1000);
+            });
           }}
         >
           Delete

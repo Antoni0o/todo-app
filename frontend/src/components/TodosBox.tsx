@@ -1,4 +1,11 @@
-import { Accordion, Box, Flex, Heading, useColorMode } from "@chakra-ui/react";
+import {
+  Accordion,
+  Box,
+  Flex,
+  Heading,
+  LightMode,
+  useColorMode,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { TodoAccordion } from "./TodoAccordion";
 
@@ -21,9 +28,9 @@ const TodosBox = ({ todos }: TodosBoxProps) => {
         overflowY="scroll"
         sx={{
           scrollbarWidth: "thin",
-          scrollbarColor: "light.200",
+          scrollbarColor: colorMode == "dark" ? "light.200" : "dark.300",
           "::-webkit-scrollbar": {
-            width: "3px",
+            width: "5px",
             margin: "2rem",
           },
           "::-webkit-scrollbar-track": {
@@ -32,18 +39,14 @@ const TodosBox = ({ todos }: TodosBoxProps) => {
             background: "transparent",
           },
           "::-webkit-scrollbar-thumb": {
-            backgroundColor: "light.200",
+            backgroundColor: colorMode == "dark" ? "light.200" : "dark.300",
+            border: "1px solid",
+            borderColor: colorMode == "dark" ? "dark.300" : "light.200",
             borderRadius: "10px",
           },
         }}
       >
-        <Accordion
-          allowMultiple
-          allowToggle
-          display="flex"
-          flexDir="column"
-          gap="1rem"
-        >
+        <Accordion allowMultiple display="flex" flexDir="column" gap="1rem">
           {todos ? (
             todos.map((todo) => {
               const deadline = new Date(todo["deadline"]).toLocaleDateString(

@@ -1,6 +1,7 @@
-import { hash } from 'bcrypt';
+import { compare, hash } from 'bcrypt';
 import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
+import { AppError } from '../../errors/AppError';
 
 import prismaClient from '../../prisma';
 
@@ -11,16 +12,21 @@ interface IUserRequest {
   name?: string;
   email?: string;
   password?: string;
+  oldPassword: string;
 }
 
 class UpdateUserService {
-  async execute({ id, name, email, password }: IUserRequest) {
+  async execute({ id, name, email, password, oldPassword }: IUserRequest) {
     const user = await prismaClient.user.findFirst({
       where: {
         id
       }
     });
 
+    if (!compare(user.password, oldPassword)) {
+      throw new AppError("The old password dont match!", 400);
+    }
+    
     const passwordHash = await hash(password, 8);
 
     let dateNow = dayjs().utc(true).format();
