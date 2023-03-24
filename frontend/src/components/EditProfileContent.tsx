@@ -161,6 +161,7 @@ const EditProfileContent = () => {
           />
           <Flex flexDir="column" marginTop="1em" gap="1rem">
             <Button
+              isDisabled
               isLoading={isLoading}
               type="submit"
               variant="outline"
@@ -181,8 +182,8 @@ const EditProfileContent = () => {
               bg={colorMode == "dark" ? "light.200" : "dark.300"}
             />
             <Button
+              isDisabled
               isLoading={isLoading}
-              type="submit"
               variant="outline"
               borderColor="danger.200"
               color="danger.200"
