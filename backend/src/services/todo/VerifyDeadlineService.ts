@@ -31,7 +31,7 @@ class VerifyDeadlineService {
       return updatedTodo
     }
 
-    if(dayjs(dateNow).isSame(deadline) || dayjs(dateNow).isAfter(deadline)) {
+    if(dayjs(dateNow).isAfter(deadline)) {
       const updatedTodo = await prismaClient.todo.update({
         where: {
           id

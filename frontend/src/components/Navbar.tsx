@@ -73,12 +73,12 @@ const Navbar = ({ user }: INavbarProps) => {
 
           <DrawerBody padding="0">
             <List>
-              <a href="/edit-profile">
+              <Link href="/edit-profile">
                 <ListElement>
                   <ListIcon fontSize="1rem" as={BsPencilSquare} />
                   Edit Profile
                 </ListElement>
-              </a>
+              </Link>
               <Box
                 onClick={() => {
                   signOut();
