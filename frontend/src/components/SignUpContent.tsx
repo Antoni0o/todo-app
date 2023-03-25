@@ -8,6 +8,7 @@ import {
   Input,
   Link,
   useColorMode,
+  useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { FaArrowRight } from "react-icons/fa";

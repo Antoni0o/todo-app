@@ -1,12 +1,4 @@
-import {
-  Accordion,
-  Box,
-  Flex,
-  Heading,
-  LightMode,
-  useColorMode,
-} from "@chakra-ui/react";
-import { useRouter } from "next/router";
+import { Accordion, Box, Flex, Heading, useColorMode } from "@chakra-ui/react";
 import { TodoAccordion } from "./TodoAccordion";
 
 type TodosBoxProps = {

@@ -17,7 +17,7 @@ class VerifyDeadlineService {
     const deadline = dayjs(todo.deadline).utc(true).format();
     const dateNow = dayjs().utc(true).format();
 
-    if(todo.out_of_time && dayjs(dateNow).isBefore(deadline)) {
+    if(todo.out_of_time && dayjs(deadline).diff(dateNow, "hours") >= -24) {
       const updatedTodo = await prismaClient.todo.update({
         where: {
           id
@@ -31,7 +31,7 @@ class VerifyDeadlineService {
       return updatedTodo
     }
 
-    if(dayjs(dateNow).isAfter(deadline)) {
+    if(dayjs(deadline).diff(dateNow, "hours") <= -24) {
       const updatedTodo = await prismaClient.todo.update({
         where: {
           id
@@ -45,7 +45,7 @@ class VerifyDeadlineService {
       return updatedTodo
     }
 
-    return "deadline veryfied, all good";
+    return "deadline verified, all good";
   }
 }
 
