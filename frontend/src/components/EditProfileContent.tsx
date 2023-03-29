@@ -7,6 +7,7 @@ import {
   Flex,
   Avatar,
   Divider,
+  useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
@@ -15,10 +16,16 @@ import { api } from "../api";
 import { BsPencilSquare, BsTrashFill } from "react-icons/bs";
 
 const EditProfileContent = () => {
+  const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [isOldPasswordInvalid, setIsOldPasswordInvalid] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [isNewPasswordInvalid, setIsNewPasswordInvalid] = useState(false);
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [isConfirmNewPasswordInvalid, setIsConfirmNewPasswordInvalid] = useState(false);
 
   const { colorMode } = useColorMode();
   const router = useRouter();
@@ -62,7 +69,7 @@ const EditProfileContent = () => {
               width: "100%",
               gap: "0.4rem",
               _after: {
-                content: '"Edit Avatar"',
+                content: '"Change Avatar"',
               },
             }}
           >
@@ -77,22 +84,46 @@ const EditProfileContent = () => {
             setIsLoading(true);
             e.preventDefault();
 
-            api
-              .post("/user/", {
-                name: username,
-                email,
-                password,
-              })
-              .then(() => {
-                setTimeout(() => {
-                  router.push("/");
-                }, 1000);
-              })
-              .catch((err) => {
-                setTimeout(() => {
-                  setIsLoading(false);
-                }, 1000);
-              });
+            if(newPassword == confirmNewPassword) {
+              api
+                .post("/user/", {
+                  name: username,
+                  email,
+                  oldPassword,
+                  newPassword
+                })
+                .then(() => {
+                  setTimeout(() => {
+                    router.push("/");
+                  }, 1000);
+                })
+                .catch((err) => {
+                  setTimeout(() => {
+                    setIsLoading(false);
+                  }, 1000);
+
+                  toast({
+                    title: 'Error while updating user',
+                    description: err.message,
+                    position: 'top-right',
+                    status: 'error'
+                  });
+
+                  if(err.message == "The old password dont match!") {
+                    setIsOldPasswordInvalid(true);
+                  }
+                });
+            }
+
+            toast({
+              title: 'Error while updating user',
+              description: 'Passwords are different!',
+              position: 'top-right',
+              status: 'error'
+            })
+            
+            setIsConfirmNewPasswordInvalid(true);
+            setIsNewPasswordInvalid(true);
           }}
         >
           <Input
@@ -121,12 +152,13 @@ const EditProfileContent = () => {
             }}
           />
           <Input
+            isInvalid={isOldPasswordInvalid}
             placeholder="Old Password"
             type="password"
-            value={password}
+            value={oldPassword}
             onChange={(e) => {
               const { value } = e.target;
-              setPassword(value);
+              setOldPassword(value);
             }}
             marginTop="1em"
             _focus={{
@@ -134,12 +166,13 @@ const EditProfileContent = () => {
             }}
           />
           <Input
+            isInvalid={isNewPasswordInvalid}
             placeholder="New Password"
             type="password"
-            value={password}
+            value={newPassword}
             onChange={(e) => {
               const { value } = e.target;
-              setPassword(value);
+              setNewPassword(value);
             }}
             marginTop="1em"
             _focus={{
@@ -147,12 +180,13 @@ const EditProfileContent = () => {
             }}
           />
           <Input
+            isInvalid={isConfirmNewPasswordInvalid}
             placeholder="Confirm New Password"
             type="password"
-            value={password}
+            value={confirmNewPassword}
             onChange={(e) => {
               const { value } = e.target;
-              setPassword(value);
+              setConfirmNewPassword(value);
             }}
             marginTop="1em"
             _focus={{
