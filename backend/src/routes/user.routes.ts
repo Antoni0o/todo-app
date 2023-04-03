@@ -1,7 +1,7 @@
 import { Router } from "express";
 import multer from "multer";
 
-import { storage } from '../config/upload'
+import { storage } from "../config/upload";
 import { AuthenticateUserController } from "../controllers/user/AuthenticateUserController";
 import { UpdateAvatarController } from "../controllers/user/UpdateAvatarController";
 import { CreateUserController } from "../controllers/user/CreateUserController";
@@ -14,15 +14,28 @@ const userRoutes = Router();
 
 const upload = multer({ storage });
 
-userRoutes.post('/', new CreateUserController().handle);
-userRoutes.post('/login', new AuthenticateUserController().handle);
+userRoutes.post("/", new CreateUserController().handle);
+userRoutes.post("/login", new AuthenticateUserController().handle);
 
-userRoutes.get('/', new GetUserController().handle);
+userRoutes.get("/", new GetUserController().handle);
 
-userRoutes.put('/update', ensureAuthentication, new UpdateUserController().handle);
+userRoutes.put(
+  "/update",
+  ensureAuthentication,
+  new UpdateUserController().handle
+);
 
-userRoutes.patch('/avatar', ensureAuthentication, upload.single('img'), new UpdateAvatarController().handle);
+userRoutes.patch(
+  "/avatar",
+  ensureAuthentication,
+  upload.single("img"),
+  new UpdateAvatarController().handle
+);
 
-userRoutes.delete('/delete', ensureAuthentication, new DeleteUserController().handle);
+userRoutes.delete(
+  "/delete",
+  ensureAuthentication,
+  new DeleteUserController().handle
+);
 
-export { userRoutes }
+export { userRoutes };

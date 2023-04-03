@@ -8,15 +8,29 @@ import {
   Avatar,
   Divider,
   useToast,
+  FormControl,
+  FormLabel,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
 import { useState } from "react";
 import { api } from "../api";
 import { BsPencilSquare, BsTrashFill } from "react-icons/bs";
+import { User } from "../types/User";
+import { UpdateAvatarModal } from "./UpdateAvatarModal";
 
-const EditProfileContent = () => {
-  const toast = useToast();
+interface IEditProfileContentProps {
+  user: User | null;
+}
+
+const EditProfileContent = ({ user }: IEditProfileContentProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -29,6 +43,8 @@ const EditProfileContent = () => {
 
   const { colorMode } = useColorMode();
   const router = useRouter();
+  const toast = useToast();
+  const { onOpen, isOpen, onClose } = useDisclosure();
 
   return (
     <>
@@ -41,12 +57,12 @@ const EditProfileContent = () => {
         m="4rem 2rem"
         p="1rem 1rem 4rem 1rem"
       >
-        <Flex flexDir="column" mb="2rem">
+        <Flex flexDir="column" mb="2rem" cursor="pointer" onClick={onOpen}>
           <Avatar
-            name="Antonio"
+            src={user?.avatar_url}
             m="-4rem 0 0 0"
-            w="8rem"
-            h="8rem"
+            w="9rem"
+            h="9rem"
             border="0.4rem solid"
             color={colorMode == "dark" ? "blue.100" : "light.400"}
             outline="1px solid"
@@ -68,6 +84,7 @@ const EditProfileContent = () => {
             _hover={{
               width: "100%",
               gap: "0.4rem",
+              fontSize: "0.8rem",
               _after: {
                 content: '"Change Avatar"',
               },
@@ -76,80 +93,123 @@ const EditProfileContent = () => {
             <BsPencilSquare />
           </Box>
         </Flex>
+
         <Heading fontWeight="bold" fontSize="3xl">
           Edit Profile
         </Heading>
+        <Box flexDir="column" my="1rem">
+          <Alert status='warning'>
+            <AlertIcon />
+            <AlertTitle>Sign out after update to changes take effect!</AlertTitle>
+          </Alert>
+        </Box>
         <form
           onSubmit={(e) => {
             setIsLoading(true);
             e.preventDefault();
 
-            if(newPassword == confirmNewPassword) {
-              api
-                .post("/user/", {
-                  name: username,
-                  email,
-                  oldPassword,
-                  newPassword
-                })
-                .then(() => {
-                  setTimeout(() => {
-                    router.push("/");
-                  }, 1000);
-                })
-                .catch((err) => {
-                  setTimeout(() => {
-                    setIsLoading(false);
-                  }, 1000);
+            api
+              .put("/user/update", {
+                name: username,
+                email
+              })
+              .then(() => {
+                setTimeout(() => {
+                  router.push('/home');
+                }, 1000);
+              })
+              .catch((err) => {
+                setTimeout(() => {
+                  setIsLoading(false);
+                }, 1000);
 
-                  toast({
-                    title: 'Error while updating user',
-                    description: err.message,
-                    position: 'top-right',
-                    status: 'error'
+                toast({
+                  title: 'Error while updating user',
+                  description: err.message,
+                  position: 'top-right',
+                  status: 'error'
+                });
+              });
+
+            if (confirmNewPassword && newPassword) {
+              if (newPassword == confirmNewPassword) {
+                api
+                  .put("/user/update", {
+                    name: username,
+                    email,
+                    oldPassword,
+                    newPassword
+                  })
+                  .then(() => {
+                    setTimeout(() => {
+                      router.push('/home');
+                    }, 1000);
+                  })
+                  .catch((err) => {
+                    setTimeout(() => {
+                      setIsLoading(false);
+                    }, 1000);
+
+                    toast({
+                      title: 'Error while updating user',
+                      description: err.message,
+                      position: 'top-right',
+                      status: 'error'
+                    });
+
+                    if (err.message == "The old password dont match!") {
+                      setIsOldPasswordInvalid(true);
+                    }
                   });
 
-                  if(err.message == "The old password dont match!") {
-                    setIsOldPasswordInvalid(true);
-                  }
-                });
-            }
+                toast({
+                  title: 'Error while updating user',
+                  description: 'Passwords are different!',
+                  position: 'top-right',
+                  status: 'error'
+                })
 
-            toast({
-              title: 'Error while updating user',
-              description: 'Passwords are different!',
-              position: 'top-right',
-              status: 'error'
-            })
-            
-            setIsConfirmNewPasswordInvalid(true);
-            setIsNewPasswordInvalid(true);
+                setIsConfirmNewPasswordInvalid(true);
+                setIsNewPasswordInvalid(true);
+
+              }
+            }
           }}
         >
-          <Input
-            placeholder="Username"
-            value={username}
-            onChange={(e) => {
-              const { value } = e.target;
-              setUsername(value);
-            }}
-            marginTop="2em"
-            _focus={{
-              borderColor: colorMode == "dark" ? "light.300" : "blue.100",
-            }}
-          />
-          <Input
-            placeholder="E-mail"
-            type="email"
-            value={email}
-            onChange={(e) => {
-              const { value } = e.target;
-              setEmail(value);
-            }}
-            marginTop="1em"
-            _focus={{
-              borderColor: colorMode == "dark" ? "light.300" : "blue.100",
-            }}
+          <FormControl marginBottom="1rem">
+            <FormLabel>Username:</FormLabel>
+            <Input
+              placeholder={user?.name}
+              value={username}
+              onChange={(e) => {
+                const { value } = e.target;
+                setUsername(value);
+              }}
+              _focus={{
+                borderColor: colorMode == "dark" ? "light.300" : "blue.100",
+              }}
+            />
+          </FormControl>
+          <FormControl marginBottom="1rem">
+            <FormLabel>E-mail:</FormLabel>
+            <Input
+              placeholder={user?.email}
+              type="email"
+              value={email}
+              onChange={(e) => {
+                const { value } = e.target;
+                setEmail(value);
+              }}
+              _focus={{
+                borderColor: colorMode == "dark" ? "light.300" : "blue.100",
+              }}
+            />
+          </FormControl>
+          <Divider
+            m="0"
+            opacity="0.8"
+            h="1px"
+            bg={colorMode == "dark" ? "light.200" : "dark.300"}
           />
           <Input
             isInvalid={isOldPasswordInvalid}
@@ -195,7 +255,6 @@ const EditProfileContent = () => {
           />
           <Flex flexDir="column" marginTop="1em" gap="1rem">
             <Button
-              isDisabled
               isLoading={isLoading}
               type="submit"
               variant="outline"
@@ -216,7 +275,6 @@ const EditProfileContent = () => {
               bg={colorMode == "dark" ? "light.200" : "dark.300"}
             />
             <Button
-              isDisabled
               isLoading={isLoading}
               variant="outline"
               borderColor="danger.200"
@@ -226,12 +284,31 @@ const EditProfileContent = () => {
                 color: colorMode == "dark" ? "blue.100" : "light.200",
               }}
               rightIcon={<BsTrashFill />}
+              onClick={() => {
+                api.delete('/user/delete')
+                  .then(() => {
+                    router.push('/');
+                  })
+                  .catch((err) => {
+                    toast({
+                      title: 'Error while deleting user',
+                      description: 'Error: ' + err,
+                      position: 'top-right',
+                      status: 'error'
+                    })
+                  });
+              }}
             >
               Delete Profile
             </Button>
           </Flex>
         </form>
       </Flex>
+
+      <Modal isCentered isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <UpdateAvatarModal id={user?.id || ""} />
+      </Modal>
     </>
   );
 };

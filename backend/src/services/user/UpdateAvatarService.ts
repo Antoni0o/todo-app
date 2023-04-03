@@ -1,25 +1,25 @@
 import dayjs from "dayjs";
-import utc from 'dayjs/plugin/utc';
+import utc from "dayjs/plugin/utc";
 
-import { AppError } from '../../errors/AppError';
-import prismaClient from '../../prisma';
+import { AppError } from "../../errors/AppError";
+import prismaClient from "../../prisma";
 
 dayjs.extend(utc);
 
 interface IUserRequest {
   id: string;
-  avatar_url: string
+  avatar_url: string;
 }
 
 class UpdateAvatarService {
-  async execute({id, avatar_url}: IUserRequest) {
+  async execute({ id, avatar_url }: IUserRequest) {
     const user = await prismaClient.user.findFirst({
       where: {
-        id
-      }
+        id,
+      },
     });
 
-    if(!user) {
+    if (!user) {
       throw new AppError("Invalid Token!", 400);
     }
 
@@ -27,13 +27,15 @@ class UpdateAvatarService {
 
     const updatedUser = await prismaClient.user.update({
       where: {
-        id
+        id,
       },
       data: {
         avatar_url,
-        updated_at: dateNow
-      }
+        updated_at: dateNow,
+      },
     });
+
+    console.log(updatedUser);
 
     return {
       updated_user: {
@@ -42,10 +44,10 @@ class UpdateAvatarService {
         email: updatedUser.email,
         avatar_url: updatedUser.avatar_url,
         created_at: updatedUser.created_at,
-        updated_at: updatedUser.updated_at
-      }
+        updated_at: updatedUser.updated_at,
+      },
     };
   }
 }
 
-export { UpdateAvatarService }
+export { UpdateAvatarService };

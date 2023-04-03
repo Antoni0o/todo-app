@@ -8,7 +8,7 @@ export default function EditProfile() {
   return (
     <>
       <Navbar user={user} />
-      <EditProfileContent />
+      <EditProfileContent user={user} />
     </>
   );
 }

@@ -1,7 +1,7 @@
-import { compare } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
+import { compare } from "bcrypt";
+import { sign } from "jsonwebtoken";
 
-import auth from '../../config/auth';
+import auth from "../../config/auth";
 import { AppError } from "../../errors/AppError";
 import prismaClient from "../../prisma";
 
@@ -11,20 +11,20 @@ interface IUserRequest {
 }
 
 class AuthenticateUserService {
-  async execute({email, password}: IUserRequest) {
+  async execute({ email, password }: IUserRequest) {
     const user = await prismaClient.user.findFirst({
       where: {
-        email: email
-      }
+        email: email,
+      },
     });
 
-    if(!user) {
+    if (!user) {
       throw new AppError("Email or password incorrect!", 400);
     }
 
     const passwordMatch = await compare(password, user.password);
 
-    if(!passwordMatch) {
+    if (!passwordMatch) {
       throw new AppError("Email or password incorrect!", 400);
     }
 
@@ -39,11 +39,12 @@ class AuthenticateUserService {
       user: {
         id: user.id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        avatar_url: user.avatar_url,
       },
-      token
-    }
-  };
-};
+      token,
+    };
+  }
+}
 
 export { AuthenticateUserService };
